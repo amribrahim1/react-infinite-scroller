@@ -1,8 +1,10 @@
+This's a fork of [react-infinite-scroller](https://github.com/guillaumervls/react-infinite-scroller) to support [React 19](https://react.dev/blog/2024/04/25/react-19-upgrade-guide)
+
 # React Infinite Scroller
 
-[![npm](https://img.shields.io/npm/dt/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/react-infinite-scroller)
-[![npm](https://img.shields.io/npm/v/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/react-infinite-scroller)
-[![npm](https://img.shields.io/npm/l/react-infinite-scroller.svg?style=flat-square)](https://github.com/danbovey/react-infinite-scroller/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/dt/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/@amreraky/react-infinite-scroller)
+[![npm](https://img.shields.io/npm/v/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/@amreraky/react-infinite-scroller)
+[![npm](https://img.shields.io/npm/l/react-infinite-scroller.svg?style=flat-square)](https://github.com/amribrahim1/react-infinite-scroller/blob/master/LICENSE)
 
 Infinitely load a grid or list of items in React. This component allows you to create a simple, lightweight infinite scrolling page or element by supporting both window and scrollable elements.
 
@@ -17,21 +19,18 @@ Infinitely load a grid or list of items in React. This component allows you to c
 ---
 
 - [Demo](https://danbovey.uk/react-infinite-scroller/demo/)
-- [Demo Source](https://github.com/danbovey/react-infinite-scroller/blob/master/docs/src/index.js)
+- [Demo Source](https://github.com/amribrahim1/react-infinite-scroller/blob/master/docs/src/index.js)
 
 ## Installation
 
 ```
-npm install react-infinite-scroller --save
-```
-```
-yarn add react-infinite-scroller
+npm install @amreraky/react-infinite-scroller --save
 ```
 
 ## How to use
 
 ```js
-import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from '@amreraky/react-infinite-scroller';
 ```
 
 ### Window scroll events
@@ -88,8 +87,8 @@ You can define a custom `parentNode` element to base the scroll calulations on.
 
 | Name              | Required | Type         | Default   | Description                                                                                                                                                                         |
 | :---------------- | :------- | :----------- | :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `children`        | Yes      | `Node`   |           | Anything that can be rendered (same as PropType's Node) |
-| `loadMore`        | Yes      | `Function`   |           | A callback when more items are requested by the user. Receives a single parameter specifying the page to load e.g. `function handleLoadMore(page) { /* load more items here */ }` } |
+| `children`        | Yes      | `Node`   |           | Anything that can be rendered (same as PropType's Node) |
+| `loadMore`        | Yes      | `Function`   |           | A callback when more items are requested by the user. Receives a single parameter specifying the page to load e.g. `function handleLoadMore(page) { /* load more items here */ }` } |
 | `element`         |          | `Component`  | `'div'`   | Name of the element that the component should render as.                                                                                                                            |
 | `hasMore`         |          | `Boolean`    | `false`   | Whether there are more items to be loaded. Event listeners are removed if `false`.                                                                                                  |
 | `initialLoad`     |          | `Boolean`    | `true`    | Whether the component should load the first set of items.                                                                                                                           |
@@ -117,9 +116,6 @@ the entire height of the items.
 }
 ```
 
-Some people have found success using [react-infinite-scroll-component](https://github.com/ankeetmaini/react-infinite-scroll-component).
-
-### But you should just add an `isLoading` prop!
 
 This component doesn't make any assumptions about what you do in terms of API
 calls. It's up to you to store whether you are currently loading items from an
