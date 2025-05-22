@@ -1,1 +1,1 @@
-module.exports = require('./dist/InfiniteScroll')
+module.exports = require('./dist/InfiniteScroll');
