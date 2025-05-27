@@ -1,4 +1,4 @@
-This's a fork of [react-infinite-scroller](https://github.com/guillaumervls/react-infinite-scroller) to support [React 19](https://react.dev/blog/2024/04/25/react-19-upgrade-guide)
+This's a fork of [react-infinite-scroller](https://github.com/guillaumervls/react-infinite-scroller) to support [React >= 18](https://react.dev/blog/2024/04/25/react-19-upgrade-guide) and TypeScript
 
 # React Infinite Scroller
 
