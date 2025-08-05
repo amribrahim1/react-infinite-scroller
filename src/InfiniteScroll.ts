@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, ElementType, ComponentPropsWithRef } from 'react';
+import React, { useEffect, useRef, useCallback, ElementType, ComponentProps } from 'react';
 
 type InfiniteScrollOwnProps = {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ type InfiniteScrollOwnProps = {
 
 type InfiniteScrollProps<T extends ElementType = 'div'> =
   InfiniteScrollOwnProps &
-  Omit<ComponentPropsWithRef<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
+  Omit<ComponentProps<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
     element?: T;
   };
 

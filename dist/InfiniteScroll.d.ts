@@ -1,4 +1,4 @@
-import React, { ElementType, ComponentPropsWithRef } from 'react';
+import React, { ElementType, ComponentProps } from 'react';
 type InfiniteScrollOwnProps = {
     children: React.ReactNode;
     element?: ElementType;
@@ -13,7 +13,7 @@ type InfiniteScrollOwnProps = {
     useCapture?: boolean;
     useWindow?: boolean;
 };
-type InfiniteScrollProps<T extends ElementType = 'div'> = InfiniteScrollOwnProps & Omit<ComponentPropsWithRef<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
+type InfiniteScrollProps<T extends ElementType = 'div'> = InfiniteScrollOwnProps & Omit<ComponentProps<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
     element?: T;
 };
 declare const InfiniteScroll: <T extends ElementType = "div">(props: InfiniteScrollProps<T>) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
