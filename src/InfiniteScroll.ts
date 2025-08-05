@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, ElementType, ComponentPropsWithRef } from 'react';
 
-interface InfiniteScrollProps extends React.HTMLProps<HTMLElement> {
+type InfiniteScrollOwnProps = {
   children: React.ReactNode;
-  element?: React.ElementType;
+  element?: ElementType;
   hasMore?: boolean;
   initialLoad?: boolean;
   isReverse?: boolean;
@@ -13,23 +13,30 @@ interface InfiniteScrollProps extends React.HTMLProps<HTMLElement> {
   threshold?: number;
   useCapture?: boolean;
   useWindow?: boolean;
-}
+};
 
-const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
-  children,
-  element: Element = 'div',
-  hasMore = false,
-  initialLoad = true,
-  isReverse = false,
-  loader = null,
-  loadMore,
-  pageStart = 0,
-  getScrollParent = null,
-  threshold = 250,
-  useCapture = false,
-  useWindow = true,
-  ...props
-}) => {
+type InfiniteScrollProps<T extends ElementType = 'div'> =
+  InfiniteScrollOwnProps &
+  Omit<ComponentPropsWithRef<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
+    element?: T;
+  };
+
+const InfiniteScroll = <T extends ElementType = 'div'>(props: InfiniteScrollProps<T>) => {
+  const {
+    children,
+    element: Element = 'div',
+    hasMore = false,
+    initialLoad = true,
+    isReverse = false,
+    loader = null,
+    loadMore,
+    pageStart = 0,
+    getScrollParent = null,
+    threshold = 250,
+    useCapture = false,
+    useWindow = true,
+    ...rest
+  } = props;
   const scrollComponent = useRef<HTMLElement | null>(null);
   const pageLoaded = useRef(pageStart);
   const beforeScrollHeight = useRef(0);
@@ -164,11 +171,12 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
       ref: (node: HTMLElement) => {
         scrollComponent.current = node;
       },
-      ...props,
+      ...rest,
     },
     childrenArray
   );
 };
 
-export { InfiniteScrollProps };
+
+export type { InfiniteScrollProps };
 export default InfiniteScroll;

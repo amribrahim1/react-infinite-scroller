@@ -1,7 +1,7 @@
-import React from 'react';
-interface InfiniteScrollProps extends React.HTMLProps<HTMLElement> {
+import React, { ElementType, ComponentPropsWithRef } from 'react';
+type InfiniteScrollOwnProps = {
     children: React.ReactNode;
-    element?: React.ElementType;
+    element?: ElementType;
     hasMore?: boolean;
     initialLoad?: boolean;
     isReverse?: boolean;
@@ -12,8 +12,11 @@ interface InfiniteScrollProps extends React.HTMLProps<HTMLElement> {
     threshold?: number;
     useCapture?: boolean;
     useWindow?: boolean;
-}
-declare const InfiniteScroll: React.FC<InfiniteScrollProps>;
-export { InfiniteScrollProps };
+};
+type InfiniteScrollProps<T extends ElementType = 'div'> = InfiniteScrollOwnProps & Omit<ComponentPropsWithRef<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
+    element?: T;
+};
+declare const InfiniteScroll: <T extends ElementType = "div">(props: InfiniteScrollProps<T>) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+export type { InfiniteScrollProps };
 export default InfiniteScroll;
 //# sourceMappingURL=InfiniteScroll.d.ts.map
