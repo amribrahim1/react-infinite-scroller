@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useCallback, ElementType, ComponentProps } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
-type InfiniteScrollOwnProps = {
+interface InfiniteScrollBaseProps {
   children: React.ReactNode;
-  element?: ElementType;
+  element?: React.ElementType;
   hasMore?: boolean;
   initialLoad?: boolean;
   isReverse?: boolean;
@@ -13,35 +13,35 @@ type InfiniteScrollOwnProps = {
   threshold?: number;
   useCapture?: boolean;
   useWindow?: boolean;
-};
+}
 
-type InfiniteScrollProps<T extends ElementType = 'div'> =
-  InfiniteScrollOwnProps &
-  Omit<ComponentProps<T>, keyof InfiniteScrollOwnProps | 'ref' | 'children'> & {
-    element?: T;
+export type InfiniteScrollProps<E extends React.ElementType = 'div'> =
+  InfiniteScrollBaseProps &
+  Omit<React.ComponentProps<E>, keyof InfiniteScrollBaseProps> & {
+    element?: E;
   };
 
-const InfiniteScroll = <T extends ElementType = 'div'>(props: InfiniteScrollProps<T>) => {
-  const {
-    children,
-    element: Element = 'div',
-    hasMore = false,
-    initialLoad = true,
-    isReverse = false,
-    loader = null,
-    loadMore,
-    pageStart = 0,
-    getScrollParent = null,
-    threshold = 250,
-    useCapture = false,
-    useWindow = true,
-    ...rest
-  } = props;
+const InfiniteScroll = <E extends React.ElementType = 'div'>({
+  children,
+  element = 'div' as E,
+  hasMore = false,
+  initialLoad = true,
+  isReverse = false,
+  loader = null,
+  loadMore,
+  pageStart = 0,
+  getScrollParent,
+  threshold = 250,
+  useCapture = false,
+  useWindow = true,
+  ...props
+}: InfiniteScrollProps<E>) => {
   const scrollComponent = useRef<HTMLElement | null>(null);
   const pageLoaded = useRef(pageStart);
   const beforeScrollHeight = useRef(0);
   const beforeScrollTop = useRef(0);
   const loadMoreFlag = useRef(false);
+  const retryTimer = useRef<number | undefined>(undefined);
 
   const getParentElement = useCallback(() => {
     if (getScrollParent) {
@@ -75,6 +75,10 @@ const InfiniteScroll = <T extends ElementType = 'div'>(props: InfiniteScrollProp
   }, [isPassiveSupported, useCapture]);
 
   const detachScrollListener = useCallback(() => {
+    if (retryTimer.current) {
+      window.clearTimeout(retryTimer.current);
+      retryTimer.current = undefined;
+    }
     let scrollEl: any = window;
     if (!useWindow) {
       scrollEl = getParentElement();
@@ -130,8 +134,18 @@ const InfiniteScroll = <T extends ElementType = 'div'>(props: InfiniteScrollProp
   }, [useWindow, isReverse, threshold, detachScrollListener, getParentElement, loadMore]);
 
   const attachScrollListener = useCallback(() => {
+    if (retryTimer.current) {
+      window.clearTimeout(retryTimer.current);
+      retryTimer.current = undefined;
+    }
     const parentElement = getParentElement();
-    if (!hasMore || !parentElement) return;
+    if (!hasMore) return;
+    if (!parentElement) {
+      retryTimer.current = window.setTimeout(() => {
+        attachScrollListener();
+      }, 200);
+      return;
+    }
     let scrollEl: any = window;
     if (!useWindow) {
       scrollEl = parentElement;
@@ -153,6 +167,14 @@ const InfiniteScroll = <T extends ElementType = 'div'>(props: InfiniteScrollProp
     // eslint-disable-next-line
   }, [attachScrollListener, detachScrollListener, pageStart]);
 
+  // Re-attach when data or hasMore changes (after loadMore finishes)
+  useEffect(() => {
+    detachScrollListener();
+    attachScrollListener();
+    loadMoreFlag.current = false;
+    // eslint-disable-next-line
+  }, [children, hasMore, attachScrollListener, detachScrollListener]);
+
   // Render logic
   const childrenArray = React.Children.toArray(children);
   if (hasMore && loader !== null && loader !== undefined) {
@@ -165,18 +187,18 @@ const InfiniteScroll = <T extends ElementType = 'div'>(props: InfiniteScrollProp
     }
   }
 
+  const Element = element || 'div';
+
   return React.createElement(
     Element,
     {
       ref: (node: HTMLElement) => {
         scrollComponent.current = node;
       },
-      ...rest,
+      ...props,
     },
     childrenArray
   );
 };
 
-
-export type { InfiniteScrollProps };
 export default InfiniteScroll;

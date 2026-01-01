@@ -56,13 +56,14 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var InfiniteScroll = function (props) {
-    var children = props.children, _a = props.element, Element = _a === void 0 ? 'div' : _a, _b = props.hasMore, hasMore = _b === void 0 ? false : _b, _c = props.initialLoad, initialLoad = _c === void 0 ? true : _c, _d = props.isReverse, isReverse = _d === void 0 ? false : _d, _e = props.loader, loader = _e === void 0 ? null : _e, loadMore = props.loadMore, _f = props.pageStart, pageStart = _f === void 0 ? 0 : _f, _g = props.getScrollParent, getScrollParent = _g === void 0 ? null : _g, _h = props.threshold, threshold = _h === void 0 ? 250 : _h, _j = props.useCapture, useCapture = _j === void 0 ? false : _j, _k = props.useWindow, useWindow = _k === void 0 ? true : _k, rest = __rest(props, ["children", "element", "hasMore", "initialLoad", "isReverse", "loader", "loadMore", "pageStart", "getScrollParent", "threshold", "useCapture", "useWindow"]);
+var InfiniteScroll = function (_a) {
+    var children = _a.children, _b = _a.element, element = _b === void 0 ? 'div' : _b, _c = _a.hasMore, hasMore = _c === void 0 ? false : _c, _d = _a.initialLoad, initialLoad = _d === void 0 ? true : _d, _e = _a.isReverse, isReverse = _e === void 0 ? false : _e, _f = _a.loader, loader = _f === void 0 ? null : _f, loadMore = _a.loadMore, _g = _a.pageStart, pageStart = _g === void 0 ? 0 : _g, getScrollParent = _a.getScrollParent, _h = _a.threshold, threshold = _h === void 0 ? 250 : _h, _j = _a.useCapture, useCapture = _j === void 0 ? false : _j, _k = _a.useWindow, useWindow = _k === void 0 ? true : _k, props = __rest(_a, ["children", "element", "hasMore", "initialLoad", "isReverse", "loader", "loadMore", "pageStart", "getScrollParent", "threshold", "useCapture", "useWindow"]);
     var scrollComponent = (0, react_1.useRef)(null);
     var pageLoaded = (0, react_1.useRef)(pageStart);
     var beforeScrollHeight = (0, react_1.useRef)(0);
     var beforeScrollTop = (0, react_1.useRef)(0);
     var loadMoreFlag = (0, react_1.useRef)(false);
+    var retryTimer = (0, react_1.useRef)(undefined);
     var getParentElement = (0, react_1.useCallback)(function () {
         var _a;
         if (getScrollParent) {
@@ -95,6 +96,10 @@ var InfiniteScroll = function (props) {
         }
     }, [isPassiveSupported, useCapture]);
     var detachScrollListener = (0, react_1.useCallback)(function () {
+        if (retryTimer.current) {
+            window.clearTimeout(retryTimer.current);
+            retryTimer.current = undefined;
+        }
         var scrollEl = window;
         if (!useWindow) {
             scrollEl = getParentElement();
@@ -149,9 +154,19 @@ var InfiniteScroll = function (props) {
         }
     }, [useWindow, isReverse, threshold, detachScrollListener, getParentElement, loadMore]);
     var attachScrollListener = (0, react_1.useCallback)(function () {
+        if (retryTimer.current) {
+            window.clearTimeout(retryTimer.current);
+            retryTimer.current = undefined;
+        }
         var parentElement = getParentElement();
-        if (!hasMore || !parentElement)
+        if (!hasMore)
             return;
+        if (!parentElement) {
+            retryTimer.current = window.setTimeout(function () {
+                attachScrollListener();
+            }, 200);
+            return;
+        }
         var scrollEl = window;
         if (!useWindow) {
             scrollEl = parentElement;
@@ -171,6 +186,13 @@ var InfiniteScroll = function (props) {
         };
         // eslint-disable-next-line
     }, [attachScrollListener, detachScrollListener, pageStart]);
+    // Re-attach when data or hasMore changes (after loadMore finishes)
+    (0, react_1.useEffect)(function () {
+        detachScrollListener();
+        attachScrollListener();
+        loadMoreFlag.current = false;
+        // eslint-disable-next-line
+    }, [children, hasMore, attachScrollListener, detachScrollListener]);
     // Render logic
     var childrenArray = react_1.default.Children.toArray(children);
     if (hasMore && loader !== null && loader !== undefined) {
@@ -183,8 +205,9 @@ var InfiniteScroll = function (props) {
             childrenArray.push(safeLoader);
         }
     }
+    var Element = element || 'div';
     return react_1.default.createElement(Element, __assign({ ref: function (node) {
             scrollComponent.current = node;
-        } }, rest), childrenArray);
+        } }, props), childrenArray);
 };
 exports.default = InfiniteScroll;
