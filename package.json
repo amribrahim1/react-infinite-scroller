@@ -1,6 +1,6 @@
 {
   "name": "@amreraky/react-infinite-scroller",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Infinite scroll component for React (forked to support React >= 18 and TypeScript)",
   "keywords": [
     "infinite",

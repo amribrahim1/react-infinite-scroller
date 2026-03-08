@@ -2,9 +2,9 @@ This's a fork of [react-infinite-scroller](https://github.com/guillaumervls/reac
 
 # React Infinite Scroller
 
-[![npm](https://img.shields.io/npm/dt/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/@amreraky/react-infinite-scroller)
-[![npm](https://img.shields.io/npm/v/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/@amreraky/react-infinite-scroller)
-[![npm](https://img.shields.io/npm/l/react-infinite-scroller.svg?style=flat-square)](https://github.com/amribrahim1/react-infinite-scroller/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/dt/@amreraky/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/@amreraky/react-infinite-scroller)
+[![npm](https://img.shields.io/npm/v/@amreraky/react-infinite-scroller.svg?style=flat-square)](https://www.npmjs.com/package/@amreraky/react-infinite-scroller)
+[![npm](https://img.shields.io/npm/l/@amreraky/react-infinite-scroller.svg?style=flat-square)](https://github.com/amribrahim1/react-infinite-scroller/blob/master/LICENSE)
 
 Infinitely load a grid or list of items in React. This component allows you to create a simple, lightweight infinite scrolling page or element by supporting both window and scrollable elements.
 
