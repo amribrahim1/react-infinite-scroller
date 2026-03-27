@@ -109,7 +109,7 @@ var InfiniteScroll = function (_a) {
         scrollEl.removeEventListener('scroll', scrollListener, eventListenerOptions());
         scrollEl.removeEventListener('resize', scrollListener, eventListenerOptions());
         scrollEl.removeEventListener('mousewheel', mousewheelListener, eventListenerOptions());
-    }, [useWindow, getParentElement, eventListenerOptions]);
+    }, [useWindow, isReverse, threshold, eventListenerOptions, getParentElement, loadMore]);
     var mousewheelListener = (0, react_1.useCallback)(function (e) {
         if (e.deltaY === 1 && !isPassiveSupported()) {
             e.preventDefault();

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import { expect } from 'chai';
 import { stub } from 'sinon';
 
@@ -82,5 +82,74 @@ describe('InfiniteScroll component', () => {
             }
         }
         expect(container.textContent).to.equal('Child Text');
+    });
+
+    it('should not trigger loadMore repeatedly after callback recreation', () => {
+        const firstLoadMore = stub();
+        const secondLoadMore = stub();
+
+        const { container, rerender } = render(
+            <div>
+                <InfiniteScroll
+                    element="section"
+                    pageStart={0}
+                    loadMore={firstLoadMore}
+                    hasMore
+                    useWindow={false}
+                    initialLoad={false}
+                    threshold={1}
+                >
+                    <div className="child-component">Child Text</div>
+                </InfiniteScroll>
+            </div>
+        );
+
+        rerender(
+            <div>
+                <InfiniteScroll
+                    element="section"
+                    pageStart={0}
+                    loadMore={secondLoadMore}
+                    hasMore
+                    useWindow={false}
+                    initialLoad={false}
+                    threshold={1}
+                >
+                    <div className="child-component">Child Text</div>
+                </InfiniteScroll>
+            </div>
+        );
+
+        const scrollComponent = container.querySelector('section') as HTMLElement;
+        const scrollParent = scrollComponent.parentElement as HTMLElement;
+
+        Object.defineProperty(scrollComponent, 'offsetParent', {
+            configurable: true,
+            get: () => scrollParent,
+        });
+        Object.defineProperty(scrollComponent, 'scrollHeight', {
+            configurable: true,
+            get: () => 0,
+        });
+        Object.defineProperty(scrollParent, 'scrollTop', {
+            configurable: true,
+            writable: true,
+            value: 0,
+        });
+        Object.defineProperty(scrollParent, 'clientHeight', {
+            configurable: true,
+            get: () => 0,
+        });
+
+        act(() => {
+            scrollParent.dispatchEvent(new Event('scroll'));
+        });
+
+        act(() => {
+            scrollParent.dispatchEvent(new Event('scroll'));
+        });
+
+        expect(firstLoadMore.called).to.equal(false);
+        expect(secondLoadMore.callCount).to.equal(1);
     });
 });

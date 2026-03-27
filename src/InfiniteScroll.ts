@@ -87,7 +87,7 @@ const InfiniteScroll = <E extends React.ElementType = 'div'>({
     scrollEl.removeEventListener('scroll', scrollListener, eventListenerOptions());
     scrollEl.removeEventListener('resize', scrollListener, eventListenerOptions());
     scrollEl.removeEventListener('mousewheel', mousewheelListener, eventListenerOptions());
-  }, [useWindow, getParentElement, eventListenerOptions]);
+  }, [useWindow, isReverse, threshold, eventListenerOptions, getParentElement, loadMore]);
 
   const mousewheelListener = useCallback((e: any) => {
     if (e.deltaY === 1 && !isPassiveSupported()) {
